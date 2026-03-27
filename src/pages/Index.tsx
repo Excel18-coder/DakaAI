@@ -3,14 +3,34 @@ import Header from "@/components/Header";
 import ThesisInput from "@/components/ThesisInput";
 import ReviewOutput from "@/components/ReviewOutput";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
 const Index = () => {
+  const { user } = useAuth();
   const [reviewContent, setReviewContent] = useState("");
   const [thesisTitle, setThesisTitle] = useState("");
+  const [thesisText, setThesisText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showReview, setShowReview] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  const saveReview = useCallback(async (title: string, text: string, content: string) => {
+    if (!user) return;
+    const { error } = await supabase.from("reviews").insert({
+      user_id: user.id,
+      thesis_title: title,
+      thesis_text: text,
+      review_content: content,
+    });
+    if (error) {
+      console.error("Save error:", error);
+    } else {
+      setSaved(true);
+    }
+  }, [user]);
 
   const handleSubmit = useCallback(async (title: string, text: string) => {
     if (!SUPABASE_URL) {
@@ -19,9 +39,11 @@ const Index = () => {
     }
 
     setThesisTitle(title);
+    setThesisText(text);
     setReviewContent("");
     setShowReview(true);
     setIsLoading(true);
+    setSaved(false);
 
     try {
       const resp = await fetch(`${SUPABASE_URL}/functions/v1/review-thesis`, {
@@ -102,17 +124,24 @@ const Index = () => {
 
       setIsLoading(false);
       toast.success("Review complete!");
+
+      // Auto-save if logged in
+      if (user && fullContent) {
+        await saveReview(title, text, fullContent);
+      }
     } catch (err) {
       console.error("Review error:", err);
       toast.error("An error occurred during review. Please try again.");
       setIsLoading(false);
     }
-  }, []);
+  }, [user, saveReview]);
 
   const handleNewReview = () => {
     setShowReview(false);
     setReviewContent("");
     setThesisTitle("");
+    setThesisText("");
+    setSaved(false);
   };
 
   return (
@@ -129,7 +158,15 @@ const Index = () => {
               isStreaming={isLoading}
             />
             {!isLoading && reviewContent && (
-              <div className="flex justify-center pt-4">
+              <div className="flex flex-col items-center gap-2 pt-4">
+                {user && saved && (
+                  <p className="text-xs text-success font-sans">✓ Saved to your review history</p>
+                )}
+                {!user && (
+                  <p className="text-xs text-muted-foreground font-sans">
+                    <a href="/auth" className="text-accent underline underline-offset-4">Sign in</a> to save reviews for later
+                  </p>
+                )}
                 <button
                   onClick={handleNewReview}
                   className="text-sm font-sans text-accent hover:text-accent/80 underline underline-offset-4 transition-colors"
