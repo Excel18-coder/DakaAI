@@ -8,8 +8,10 @@ import { toast } from "sonner";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
+type CitationFormat = "APA" | "MLA" | "Chicago" | "IEEE";
+
 interface ThesisInputProps {
-  onSubmit: (title: string, text: string) => void;
+  onSubmit: (title: string, text: string, format: CitationFormat) => void;
   isLoading: boolean;
 }
 
@@ -17,6 +19,7 @@ const ThesisInput = ({ onSubmit, isLoading }: ThesisInputProps) => {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [format, setFormat] = useState<CitationFormat>("APA");
   const [isParsing, setIsParsing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -84,7 +87,7 @@ const ThesisInput = ({ onSubmit, isLoading }: ThesisInputProps) => {
 
   const handleSubmit = () => {
     if (!text.trim()) return;
-    onSubmit(title.trim() || "Untitled Thesis", text.trim());
+    onSubmit(title.trim() || "Untitled Thesis", text.trim(), format);
   };
 
   return (
@@ -116,6 +119,30 @@ const ThesisInput = ({ onSubmit, isLoading }: ThesisInputProps) => {
             onChange={(e) => setTitle(e.target.value)}
             className="font-sans bg-background"
           />
+        </div>
+
+        {/* Citation Format */}
+        <div className="space-y-2">
+          <label className="text-sm font-sans font-medium text-foreground flex items-center gap-2">
+            <FileText className="w-4 h-4 text-accent" />
+            Citation Format
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {(["APA", "MLA", "Chicago", "IEEE"] as CitationFormat[]).map((f) => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => setFormat(f)}
+                className={`px-3 py-2 rounded-lg border text-sm font-sans font-medium transition-colors ${
+                  format === f
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-background text-foreground hover:border-primary/50"
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* File Upload Area */}
