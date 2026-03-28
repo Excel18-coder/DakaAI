@@ -6,33 +6,33 @@
 
 @layer base {
   :root {
-    --background: 40 33% 97%;
-    --foreground: 220 30% 15%;
+    --background: 140 30% 95%;
+    --foreground: 150 30% 10%;
 
-    --card: 40 25% 95%;
-    --card-foreground: 220 30% 15%;
+    --card: 140 25% 92%;
+    --card-foreground: 150 30% 10%;
 
-    --popover: 40 33% 97%;
-    --popover-foreground: 220 30% 15%;
+    --popover: 140 30% 95%;
+    --popover-foreground: 150 30% 10%;
 
-    --primary: 220 25% 20%;
-    --primary-foreground: 40 33% 97%;
+    --primary: 152 40% 22%;
+    --primary-foreground: 140 30% 95%;
 
-    --secondary: 40 20% 90%;
-    --secondary-foreground: 220 25% 20%;
+    --secondary: 140 20% 88%;
+    --secondary-foreground: 152 40% 22%;
 
-    --muted: 40 15% 92%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 140 15% 90%;
+    --muted-foreground: 150 10% 40%;
 
-    --accent: 38 60% 50%;
-    --accent-foreground: 220 30% 12%;
+    --accent: 152 55% 40%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 65% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 40 15% 85%;
-    --input: 40 15% 85%;
-    --ring: 38 60% 50%;
+    --border: 140 15% 82%;
+    --input: 140 15% 82%;
+    --ring: 152 55% 40%;
 
     --radius: 0.5rem;
 
