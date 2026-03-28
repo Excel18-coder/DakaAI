@@ -78,11 +78,12 @@ serve(async (req) => {
   }
 
   try {
-    const { title, text } = await req.json();
+    const { title, text, format } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const userMessage = `Please review the following thesis titled "${title}":\n\n${text}`;
+    const formatNote = format ? `\n\nIMPORTANT: Evaluate all citations and references against the **${format}** citation style. Flag any formatting deviations from ${format} standards in your review.` : "";
+    const userMessage = `Please review the following thesis titled "${title}":${formatNote}\n\n${text}`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

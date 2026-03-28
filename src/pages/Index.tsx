@@ -32,7 +32,7 @@ const Index = () => {
     }
   }, [user]);
 
-  const handleSubmit = useCallback(async (title: string, text: string) => {
+  const handleSubmit = useCallback(async (title: string, text: string, format: string) => {
     if (!SUPABASE_URL) {
       toast.error("Backend not configured. Please enable Lovable Cloud.");
       return;
@@ -52,7 +52,7 @@ const Index = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ title, text }),
+        body: JSON.stringify({ title, text, format }),
       });
 
       if (!resp.ok || !resp.body) {
