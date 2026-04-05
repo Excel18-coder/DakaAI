@@ -137,6 +137,39 @@ const Index = () => {
     }
   }, [user, saveReview]);
 
+  const handleScore = useCallback(async (title: string, text: string, format: string) => {
+    if (!SUPABASE_URL) {
+      toast.error("Backend not configured.");
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const resp = await fetch(`${SUPABASE_URL}/functions/v1/score-thesis`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ title, text, format }),
+      });
+      if (!resp.ok) {
+        toast.error("Failed to generate score. Please try again.");
+        return;
+      }
+      const data = await resp.json();
+      toast.success(`Score: ${data.totalScore}/100 — ${data.recommendation}`);
+
+      // Generate PDF
+      const { generateAndDownloadScorePDF } = await import("@/components/ScoreSheetButton");
+      await generateAndDownloadScorePDF(title, data);
+    } catch (err) {
+      console.error("Score error:", err);
+      toast.error("An error occurred while scoring.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   const handleNewReview = () => {
     setShowReview(false);
     setReviewContent("");
@@ -150,7 +183,7 @@ const Index = () => {
       <Header />
       <main className="max-w-4xl mx-auto px-6 py-10">
         {!showReview ? (
-          <ThesisInput onSubmit={handleSubmit} isLoading={isLoading} />
+          <ThesisInput onSubmit={handleSubmit} onScore={handleScore} isLoading={isLoading} />
         ) : (
           <div className="space-y-6">
             <ReviewOutput

@@ -103,6 +103,32 @@ const generateScoreSheetHTML = (title: string, data: ScoreData): string => {
   `;
 };
 
+export const generateAndDownloadScorePDF = async (title: string, data: ScoreData) => {
+  toast.info("Generating PDF score sheet...");
+  const html = generateScoreSheetHTML(title, data);
+  const container = document.createElement("div");
+  container.innerHTML = html;
+  document.body.appendChild(container);
+  try {
+    const html2pdf = (await import("html2pdf.js")).default;
+    await html2pdf()
+      .set({
+        margin: [0.4, 0.5, 0.4, 0.5],
+        filename: `${title.replace(/[^a-zA-Z0-9]/g, "_")}_ScoreSheet.pdf`,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+      })
+      .from(container)
+      .save();
+    toast.success("Score sheet PDF downloaded!");
+  } catch {
+    toast.error("Failed to generate PDF.");
+  } finally {
+    document.body.removeChild(container);
+  }
+};
+
 const ScoreSheetButton = ({ title, text, format }: ScoreSheetButtonProps) => {
   const [isScoring, setIsScoring] = useState(false);
   const [scoreData, setScoreData] = useState<ScoreData | null>(null);
@@ -140,31 +166,7 @@ const ScoreSheetButton = ({ title, text, format }: ScoreSheetButtonProps) => {
   };
 
   const downloadPDF = async (data: ScoreData) => {
-    toast.info("Generating PDF score sheet...");
-    const html = generateScoreSheetHTML(title, data);
-
-    const container = document.createElement("div");
-    container.innerHTML = html;
-    document.body.appendChild(container);
-
-    try {
-      const html2pdf = (await import("html2pdf.js")).default;
-      await html2pdf()
-        .set({
-          margin: [0.4, 0.5, 0.4, 0.5],
-          filename: `${title.replace(/[^a-zA-Z0-9]/g, "_")}_ScoreSheet.pdf`,
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true },
-          jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
-        })
-        .from(container)
-        .save();
-      toast.success("Score sheet PDF downloaded!");
-    } catch {
-      toast.error("Failed to generate PDF.");
-    } finally {
-      document.body.removeChild(container);
-    }
+    await generateAndDownloadScorePDF(title, data);
   };
 
   return (
