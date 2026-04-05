@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
-import { FileText, Send, Loader2, Upload, X, File } from "lucide-react";
+import { FileText, Send, Loader2, Upload, X, File, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
