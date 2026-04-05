@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import JSZip from "https://esm.sh/jszip@3.10.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -27,18 +28,15 @@ serve(async (req) => {
     if (fileName.endsWith(".txt") || fileName.endsWith(".md")) {
       text = await file.text();
     } else if (fileName.endsWith(".pdf")) {
-      // Extract text from PDF using basic parsing
       const buffer = await file.arrayBuffer();
       const bytes = new Uint8Array(buffer);
       const raw = new TextDecoder("latin1").decode(bytes);
 
-      // Extract text between stream/endstream markers and decode
       const streams: string[] = [];
       const streamRegex = /stream\r?\n([\s\S]*?)endstream/g;
       let match;
       while ((match = streamRegex.exec(raw)) !== null) {
         const content = match[1];
-        // Extract text from PDF text operators
         const textMatches = content.match(/\(([^)]*)\)\s*Tj|\[((?:[^]]*?))\]\s*TJ/g);
         if (textMatches) {
           for (const tm of textMatches) {
@@ -55,7 +53,6 @@ serve(async (req) => {
       if (streams.length > 0) {
         text = streams.join(" ");
       } else {
-        // Fallback: extract any readable text
         const readable = raw.match(/[\x20-\x7E]{4,}/g);
         text = readable ? readable.join(" ") : "";
       }
@@ -67,31 +64,44 @@ serve(async (req) => {
         });
       }
     } else if (fileName.endsWith(".docx")) {
-      // DOCX is a ZIP containing XML
-      // Use Deno's built-in zip handling via streams
       const buffer = await file.arrayBuffer();
-      const bytes = new Uint8Array(buffer);
+      const zip = await JSZip.loadAsync(buffer);
 
-      // Find document.xml in the ZIP
-      // Simple ZIP parsing to find the document.xml entry
+      const docXml = zip.file("word/document.xml");
+      if (!docXml) {
+        return new Response(JSON.stringify({ error: "Invalid DOCX file: missing document.xml" }), {
+          status: 422,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const xmlContent = await docXml.async("string");
       const textContent: string[] = [];
 
-      // Convert to string and find XML text between <w:t> tags
-      const decoder = new TextDecoder("utf-8", { fatal: false });
-      const fullText = decoder.decode(bytes);
-
+      // Extract text from <w:t> tags
       const wtRegex = /<w:t[^>]*>([^<]*)<\/w:t>/g;
       let wtMatch;
-      while ((wtMatch = wtRegex.exec(fullText)) !== null) {
+      while ((wtMatch = wtRegex.exec(xmlContent)) !== null) {
         textContent.push(wtMatch[1]);
       }
 
-      if (textContent.length > 0) {
-        // Join with spaces, but detect paragraph boundaries
-        text = textContent.join(" ");
-        // Clean up excessive whitespace
-        text = text.replace(/\s+/g, " ").trim();
+      // Detect paragraph boundaries for better formatting
+      const paragraphs: string[] = [];
+      const pRegex = /<w:p[ >][\s\S]*?<\/w:p>/g;
+      let pMatch;
+      while ((pMatch = pRegex.exec(xmlContent)) !== null) {
+        const pText: string[] = [];
+        const innerWt = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+        let m;
+        while ((m = innerWt.exec(pMatch[0])) !== null) {
+          pText.push(m[1]);
+        }
+        if (pText.length > 0) {
+          paragraphs.push(pText.join(""));
+        }
       }
+
+      text = paragraphs.length > 0 ? paragraphs.join("\n") : textContent.join(" ");
 
       if (!text.trim()) {
         return new Response(JSON.stringify({ error: "Could not extract text from DOCX. Please paste the text manually." }), {
