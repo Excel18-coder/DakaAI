@@ -12,6 +12,7 @@ type CitationFormat = "APA" | "MLA" | "Chicago" | "IEEE";
 
 interface ThesisInputProps {
   onSubmit: (title: string, text: string, format: CitationFormat) => void;
+  onScore: (title: string, text: string, format: CitationFormat) => void;
   isLoading: boolean;
 }
 
