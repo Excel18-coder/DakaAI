@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import Header from "@/components/Header";
 import ThesisInput from "@/components/ThesisInput";
 import ReviewOutput from "@/components/ReviewOutput";
+import ScoreSheetButton from "@/components/ScoreSheetButton";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -158,7 +159,8 @@ const Index = () => {
               isStreaming={isLoading}
             />
             {!isLoading && reviewContent && (
-              <div className="flex flex-col items-center gap-2 pt-4">
+              <div className="flex flex-col items-center gap-3 pt-4">
+                <ScoreSheetButton title={thesisTitle} text={thesisText} format="" />
                 {user && saved && (
                   <p className="text-xs text-success font-sans">✓ Saved to your review history</p>
                 )}
