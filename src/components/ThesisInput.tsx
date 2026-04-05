@@ -16,7 +16,7 @@ interface ThesisInputProps {
   isLoading: boolean;
 }
 
-const ThesisInput = ({ onSubmit, isLoading }: ThesisInputProps) => {
+const ThesisInput = ({ onSubmit, onScore, isLoading }: ThesisInputProps) => {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
@@ -89,6 +89,11 @@ const ThesisInput = ({ onSubmit, isLoading }: ThesisInputProps) => {
   const handleSubmit = () => {
     if (!text.trim()) return;
     onSubmit(title.trim() || "Untitled Thesis", text.trim(), format);
+  };
+
+  const handleScore = () => {
+    if (!text.trim()) return;
+    onScore(title.trim() || "Untitled Thesis", text.trim(), format);
   };
 
   return (
@@ -219,7 +224,25 @@ const ThesisInput = ({ onSubmit, isLoading }: ThesisInputProps) => {
           </p>
         </div>
 
-        <div className="flex justify-end pt-2">
+        <div className="flex justify-end gap-3 pt-2">
+          <Button
+            onClick={handleScore}
+            disabled={!text.trim() || isLoading || isParsing}
+            variant="outline"
+            className="gap-2 px-6"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              <>
+                <ClipboardCheck className="w-4 h-4" />
+                Score Report (PDF)
+              </>
+            )}
+          </Button>
           <Button
             onClick={handleSubmit}
             disabled={!text.trim() || isLoading || isParsing}
