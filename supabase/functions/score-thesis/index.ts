@@ -42,16 +42,16 @@ Return EXACTLY this JSON structure (no markdown, no explanation, just JSON):
   },
   "totalScore": <number out of 100>,
   "recommendation": "<one of: Pass without corrections | Pass with minor corrections | Pass with major corrections | Fail>",
-  "overallComments": "<2-3 sentence summary>"
+  "overallComments": "<2-3 sentence summary focusing ONLY on weaknesses and areas requiring amendment>"
 }
 
 Scoring guidelines:
 - 80-100: Pass without corrections
-- 60-79: Pass with minor corrections  
-- 40-59: Pass with major corrections
-- Below 40: Fail
+- 70-79: Pass with minor corrections  
+- 49-69: Pass with major corrections
+- Below 49: Fail
 
-Be fair, thorough, and evidence-based. Each score must be justified.`;
+Be fair, thorough, and evidence-based. Each justification must ONLY highlight weaknesses, gaps, and areas that need amendment. Do NOT mention strengths or positive aspects — focus exclusively on what needs to be corrected or improved.`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {

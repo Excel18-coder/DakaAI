@@ -67,7 +67,7 @@ const generateScoreSheetHTML = (title: string, data: ScoreData): string => {
             <th style="padding:8px 12px;border:1px solid #ccc;text-align:left;font-size:13px;">Item</th>
             <th style="padding:8px 12px;border:1px solid #ccc;text-align:center;font-size:13px;width:60px;">Max</th>
             <th style="padding:8px 12px;border:1px solid #ccc;text-align:center;font-size:13px;width:60px;">Score</th>
-            <th style="padding:8px 12px;border:1px solid #ccc;text-align:left;font-size:13px;">Justification</th>
+            <th style="padding:8px 12px;border:1px solid #ccc;text-align:left;font-size:13px;">Areas to Amend</th>
           </tr>
         </thead>
         <tbody>
