@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import ThesisInput from "@/components/ThesisInput";
 import ReviewOutput from "@/components/ReviewOutput";
 import ScoreSheetButton from "@/components/ScoreSheetButton";
+import AiDetectionResult, { type AiDetectionData } from "@/components/AiDetectionResult";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +18,7 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showReview, setShowReview] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [aiDetection, setAiDetection] = useState<AiDetectionData | null>(null);
 
   const saveReview = useCallback(async (title: string, text: string, content: string) => {
     if (!user) return;
@@ -170,12 +172,44 @@ const Index = () => {
     }
   }, []);
 
+  const handleDetectAi = useCallback(async (title: string, text: string) => {
+    if (!SUPABASE_URL) {
+      toast.error("Backend not configured.");
+      return;
+    }
+    setIsLoading(true);
+    setAiDetection(null);
+    try {
+      const resp = await fetch(`${SUPABASE_URL}/functions/v1/detect-ai`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ title, text }),
+      });
+      if (!resp.ok) {
+        toast.error("Failed to run AI detection. Please try again.");
+        return;
+      }
+      const data = await resp.json();
+      setAiDetection(data);
+      toast.success(`AI Detection: ${data.verdict} (${data.overallAiScore}%)`);
+    } catch (err) {
+      console.error("AI detection error:", err);
+      toast.error("An error occurred during AI detection.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   const handleNewReview = () => {
     setShowReview(false);
     setReviewContent("");
     setThesisTitle("");
     setThesisText("");
     setSaved(false);
+    setAiDetection(null);
   };
 
   return (
@@ -183,7 +217,7 @@ const Index = () => {
       <Header />
       <main className="max-w-4xl mx-auto px-6 py-10">
         {!showReview ? (
-          <ThesisInput onSubmit={handleSubmit} onScore={handleScore} isLoading={isLoading} />
+          <ThesisInput onSubmit={handleSubmit} onScore={handleScore} onDetectAi={handleDetectAi} isLoading={isLoading} />
         ) : (
           <div className="space-y-6">
             <ReviewOutput
