@@ -217,7 +217,12 @@ const Index = () => {
       <Header />
       <main className="max-w-4xl mx-auto px-6 py-10">
         {!showReview ? (
-          <ThesisInput onSubmit={handleSubmit} onScore={handleScore} onDetectAi={handleDetectAi} isLoading={isLoading} />
+          <div className="space-y-6">
+            <ThesisInput onSubmit={handleSubmit} onScore={handleScore} onDetectAi={handleDetectAi} isLoading={isLoading} />
+            {aiDetection && (
+              <AiDetectionResult data={aiDetection} onClose={() => setAiDetection(null)} />
+            )}
+          </div>
         ) : (
           <div className="space-y-6">
             <ReviewOutput
