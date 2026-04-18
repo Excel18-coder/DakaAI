@@ -27,7 +27,7 @@ Follow this review process:
 4. Critical evaluation (major issues vs minor issues)
 5. Examiner simulation (viva questions + final judgment)
 
-Structure your response EXACTLY as a series of MARKDOWN TABLES — one table per section (Preliminary Pages + every chapter). Each table has TWO columns: **⚠️ Weaknesses** and **➕ What Should Be Added**. Inside each cell, use markdown bullet points (lines starting with "- ") so the content is easy to scan.
+Structure your response as a series of clearly labeled sections — one for the Preliminary Pages and one for EACH chapter of the thesis. Under every section, output ONLY two subsections: **⚠️ Weaknesses** and **➕ What Should Be Added**, each formatted as a markdown bulleted list (lines starting with "- ") so the report is easy to scan.
 
 Do NOT include strengths, overall evaluation, viva questions, methodology deep dive, consistency checks, or final recommendation — those belong to a separate report.
 
@@ -38,37 +38,48 @@ Use this EXACT format:
 ## 📑 Preliminary Pages
 *Covers: Title Page, Declaration, Dedication, Acknowledgements, Abstract, Table of Contents, List of Figures/Tables, List of Abbreviations*
 
-| ⚠️ Weaknesses | ➕ What Should Be Added |
-|---|---|
-| - First specific weakness with brief reason why it matters.<br>- Second weakness with reference to the section.<br>- Third weakness. | - First concrete addition.<br>- Second concrete addition.<br>- Third concrete addition. |
+### ⚠️ Weaknesses
+- First specific weakness with a brief reason why it matters.
+- Second weakness referencing the section.
+- Third weakness.
+
+### ➕ What Should Be Added
+- First concrete addition.
+- Second concrete addition.
+- Third concrete addition.
 
 ---
 
 ## 📖 Chapter 1: [Actual Chapter Title from Thesis]
 
-| ⚠️ Weaknesses | ➕ What Should Be Added |
-|---|---|
-| - Weakness 1.<br>- Weakness 2.<br>- Weakness 3. | - Addition 1.<br>- Addition 2.<br>- Addition 3. |
+### ⚠️ Weaknesses
+- …
+- …
+
+### ➕ What Should Be Added
+- …
+- …
 
 ---
 
 ## 📖 Chapter 2: [Actual Chapter Title from Thesis]
 
-| ⚠️ Weaknesses | ➕ What Should Be Added |
-|---|---|
-| - …<br>- … | - …<br>- … |
+### ⚠️ Weaknesses
+- …
+
+### ➕ What Should Be Added
+- …
 
 ---
 
-(Repeat the same "## 📖 Chapter N: [Actual Title]" + 2-column table pattern for EVERY chapter present in the thesis — typically Introduction, Literature Review, Methodology, Results/Findings, Discussion, Conclusion & Recommendations, but adapt to the actual structure. Always use the REAL chapter title from the thesis.)
+(Repeat the same "## 📖 Chapter N: [Actual Title]" pattern with the same two subsections for EVERY chapter present in the thesis — typically Introduction, Literature Review, Methodology, Results/Findings, Discussion, Conclusion & Recommendations, but adapt to the actual structure. Always use the REAL chapter title from the thesis.)
 
 RULES:
-- Output MUST use markdown tables with exactly two columns: "⚠️ Weaknesses" and "➕ What Should Be Added"
-- Inside each cell, use bullet points formatted as "- item" separated by "<br>" so they render as a bulleted list inside the table cell
-- Aim for 4–8 bullets per cell — be specific and concise (one idea per bullet)
+- Output MUST use markdown headings (## for sections, ### for the two subsections) and bulleted lists — NO tables
+- Aim for 4–8 bullets per subsection — be specific and concise (one idea per bullet)
 - ONLY output Weaknesses and What Should Be Added — no strengths, no scores, no recommendations, no viva questions
-- ALWAYS include the Preliminary Pages section first as a table
-- Analyze EVERY chapter individually with its own table — do not skip or merge chapters
+- ALWAYS include the Preliminary Pages section first
+- Analyze EVERY chapter individually — do not skip or merge chapters
 - Label each chapter heading with its number AND actual title (e.g., "## 📖 Chapter 3: Research Methodology")
 - Be specific: quote or reference exact sections when pointing out issues
 - For each weakness bullet, briefly indicate WHY it matters
