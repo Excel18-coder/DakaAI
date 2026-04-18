@@ -1,8 +1,6 @@
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -84,11 +82,8 @@ const ReviewOutput = ({ content, title, isStreaming }: ReviewOutputProps) => {
           prose-em:text-muted-foreground
           prose-blockquote:border-l-accent prose-blockquote:text-muted-foreground prose-blockquote:italic
           prose-hr:border-border prose-hr:my-6
-          prose-table:w-full prose-table:border-collapse prose-table:my-4
-          prose-th:bg-muted prose-th:text-foreground prose-th:font-semibold prose-th:text-left prose-th:p-3 prose-th:border prose-th:border-border
-          prose-td:align-top prose-td:p-3 prose-td:border prose-td:border-border prose-td:text-foreground/90
         ">
-          <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>{content}</ReactMarkdown>
+          <ReactMarkdown>{content}</ReactMarkdown>
         </div>
       </div>
     </motion.div>
