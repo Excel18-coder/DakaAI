@@ -27,81 +27,53 @@ Follow this review process:
 4. Critical evaluation (major issues vs minor issues)
 5. Examiner simulation (viva questions + final judgment)
 
-Structure your response EXACTLY as follows. ONLY include two subsections per section: **Weaknesses** and **What Should Be Added**. Do NOT include strengths, overall evaluation, viva questions, methodology deep dive, consistency checks, or final recommendation — those belong to a separate report.
+Structure your response EXACTLY as a series of MARKDOWN TABLES — one table per section (Preliminary Pages + every chapter). Each table has TWO columns: **⚠️ Weaknesses** and **➕ What Should Be Added**. Inside each cell, use markdown bullet points (lines starting with "- ") so the content is easy to scan.
+
+Do NOT include strengths, overall evaluation, viva questions, methodology deep dive, consistency checks, or final recommendation — those belong to a separate report.
+
+Use this EXACT format:
 
 # Thesis Review Report
 
 ## 📑 Preliminary Pages
-(Covers: Title Page, Declaration, Dedication, Acknowledgements, Abstract, Table of Contents, List of Figures/Tables, List of Abbreviations)
+*Covers: Title Page, Declaration, Dedication, Acknowledgements, Abstract, Table of Contents, List of Figures/Tables, List of Abbreviations*
 
-### ⚠️ Weaknesses
-- (List specific weaknesses with explanation of why each is problematic)
-
-### ➕ What Should Be Added
-- (Concrete, specific suggestions for what is missing)
+| ⚠️ Weaknesses | ➕ What Should Be Added |
+|---|---|
+| - First specific weakness with brief reason why it matters.<br>- Second weakness with reference to the section.<br>- Third weakness. | - First concrete addition.<br>- Second concrete addition.<br>- Third concrete addition. |
 
 ---
 
-## 📖 Chapter 1: Introduction
-### ⚠️ Weaknesses
-- 
-### ➕ What Should Be Added
-- 
+## 📖 Chapter 1: [Actual Chapter Title from Thesis]
+
+| ⚠️ Weaknesses | ➕ What Should Be Added |
+|---|---|
+| - Weakness 1.<br>- Weakness 2.<br>- Weakness 3. | - Addition 1.<br>- Addition 2.<br>- Addition 3. |
 
 ---
 
-## 📖 Chapter 2: Literature Review
-### ⚠️ Weaknesses
-- 
-### ➕ What Should Be Added
-- 
+## 📖 Chapter 2: [Actual Chapter Title from Thesis]
+
+| ⚠️ Weaknesses | ➕ What Should Be Added |
+|---|---|
+| - …<br>- … | - …<br>- … |
 
 ---
 
-## 📖 Chapter 3: Methodology
-### ⚠️ Weaknesses
-- 
-### ➕ What Should Be Added
-- 
-
----
-
-## 📖 Chapter 4: Results / Findings
-### ⚠️ Weaknesses
-- 
-### ➕ What Should Be Added
-- 
-
----
-
-## 📖 Chapter 5: Discussion
-### ⚠️ Weaknesses
-- 
-### ➕ What Should Be Added
-- 
-
----
-
-## 📖 Chapter 6: Conclusion & Recommendations
-### ⚠️ Weaknesses
-- 
-### ➕ What Should Be Added
-- 
-
----
-
-(Adapt chapter numbers and TITLES to match the ACTUAL thesis structure. If the thesis has more chapters, add them using the same format: "## 📖 Chapter N: [Actual Chapter Title]". If fewer, omit the extras. ALWAYS label each chapter clearly with its number AND the actual title from the thesis.)
+(Repeat the same "## 📖 Chapter N: [Actual Title]" + 2-column table pattern for EVERY chapter present in the thesis — typically Introduction, Literature Review, Methodology, Results/Findings, Discussion, Conclusion & Recommendations, but adapt to the actual structure. Always use the REAL chapter title from the thesis.)
 
 RULES:
+- Output MUST use markdown tables with exactly two columns: "⚠️ Weaknesses" and "➕ What Should Be Added"
+- Inside each cell, use bullet points formatted as "- item" separated by "<br>" so they render as a bulleted list inside the table cell
+- Aim for 4–8 bullets per cell — be specific and concise (one idea per bullet)
 - ONLY output Weaknesses and What Should Be Added — no strengths, no scores, no recommendations, no viva questions
-- ALWAYS include the Preliminary Pages section first
-- Analyze EVERY chapter individually — do not skip or merge chapters
-- Label each chapter with its number AND actual title (e.g., "Chapter 3: Research Methodology")
+- ALWAYS include the Preliminary Pages section first as a table
+- Analyze EVERY chapter individually with its own table — do not skip or merge chapters
+- Label each chapter heading with its number AND actual title (e.g., "## 📖 Chapter 3: Research Methodology")
 - Be specific: quote or reference exact sections when pointing out issues
-- For each weakness, explain WHY it matters
-- For "What Should Be Added", be concrete (e.g., "Add a comparison table of methodologies" not "improve methodology")
-- Do NOT insult, shame, or dismiss the student
-- Always frame critique constructively
+- For each weakness bullet, briefly indicate WHY it matters
+- For "What Should Be Added" bullets, be concrete (e.g., "Add a comparison table of sampling methods" not "improve methodology")
+- Do NOT insult, shame, or dismiss the student — frame critique constructively
 - Do not fabricate references`;
 
 serve(async (req) => {
