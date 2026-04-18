@@ -27,108 +27,82 @@ Follow this review process:
 4. Critical evaluation (major issues vs minor issues)
 5. Examiner simulation (viva questions + final judgment)
 
-Structure your response EXACTLY as follows:
+Structure your response EXACTLY as follows. ONLY include two subsections per section: **Weaknesses** and **What Should Be Added**. Do NOT include strengths, overall evaluation, viva questions, methodology deep dive, consistency checks, or final recommendation — those belong to a separate report.
 
-## 📊 1. Overall Evaluation
-- **Topic relevance:** [rating with brief justification]
-- **Academic rigor:** [rating with brief justification]
-- **Clarity of writing:** [rating with brief justification]
-- **Methodological strength:** [rating with brief justification]
-- **Overall quality:** [rating out of 10]
+# Thesis Review Report
 
----
+## 📑 Preliminary Pages
+(Covers: Title Page, Declaration, Dedication, Acknowledgements, Abstract, Table of Contents, List of Figures/Tables, List of Abbreviations)
 
-## 📖 2. Chapter-by-Chapter Analysis
+### ⚠️ Weaknesses
+- (List specific weaknesses with explanation of why each is problematic)
 
-For EACH chapter or major section identified in the thesis, provide the following detailed breakdown:
-
-### Chapter 1: [Chapter Title / Introduction]
-#### ✅ Strengths
-- (List specific strengths with evidence from the text)
-#### ⚠️ Weaknesses
-- (List specific weaknesses with explanation of why they are problematic)
-#### ➕ What Should Be Added
-- (Concrete suggestions for content, arguments, references, or analysis that is missing)
-
-### Chapter 2: [Chapter Title / Literature Review]
-#### ✅ Strengths
-#### ⚠️ Weaknesses
-#### ➕ What Should Be Added
-
-### Chapter 3: [Chapter Title / Methodology]
-#### ✅ Strengths
-#### ⚠️ Weaknesses
-#### ➕ What Should Be Added
-
-### Chapter 4: [Chapter Title / Results/Findings]
-#### ✅ Strengths
-#### ⚠️ Weaknesses
-#### ➕ What Should Be Added
-
-### Chapter 5: [Chapter Title / Discussion]
-#### ✅ Strengths
-#### ⚠️ Weaknesses
-#### ➕ What Should Be Added
-
-### Chapter 6: [Chapter Title / Conclusion]
-#### ✅ Strengths
-#### ⚠️ Weaknesses
-#### ➕ What Should Be Added
-
-(Adapt chapter numbers and titles to match the actual thesis structure. If the thesis has more or fewer chapters, adjust accordingly.)
+### ➕ What Should Be Added
+- (Concrete, specific suggestions for what is missing)
 
 ---
 
-## 🔬 3. Methodology Deep Dive
-### Strengths
-### Weaknesses
-### Recommendations for Improvement
+## 📖 Chapter 1: Introduction
+### ⚠️ Weaknesses
+- 
+### ➕ What Should Be Added
+- 
 
 ---
 
-## ✍️ 4. Writing & Presentation Feedback
-### Clarity & Readability
-### Academic Tone & Style
-### Structure & Organization
-### Grammar & Language Issues (with examples)
+## 📖 Chapter 2: Literature Review
+### ⚠️ Weaknesses
+- 
+### ➕ What Should Be Added
+- 
 
 ---
 
-## 🔗 5. Consistency & Alignment Check
-- Objectives → Methods alignment
-- Methods → Results alignment
-- Results → Conclusions alignment
-- Flag any contradictions or unsupported claims
+## 📖 Chapter 3: Methodology
+### ⚠️ Weaknesses
+- 
+### ➕ What Should Be Added
+- 
 
 ---
 
-## ❓ 6. Simulated Viva Questions
-Provide 8–10 probing academic questions the student should prepare for, organized by difficulty.
+## 📖 Chapter 4: Results / Findings
+### ⚠️ Weaknesses
+- 
+### ➕ What Should Be Added
+- 
 
 ---
 
-## 🎓 7. Final Recommendation
-Choose ONE: **Pass** | **Pass with Minor Revisions** | **Pass with Major Revisions** | **Revise and Resubmit** | **Reject**
+## 📖 Chapter 5: Discussion
+### ⚠️ Weaknesses
+- 
+### ➕ What Should Be Added
+- 
 
-### Justification
-(Detailed paragraph explaining the recommendation)
+---
 
-### Priority Action Items
-1. (Most critical fix needed)
-2. (Second most critical)
-3. (Third most critical)
+## 📖 Chapter 6: Conclusion & Recommendations
+### ⚠️ Weaknesses
+- 
+### ➕ What Should Be Added
+- 
+
+---
+
+(Adapt chapter numbers and TITLES to match the ACTUAL thesis structure. If the thesis has more chapters, add them using the same format: "## 📖 Chapter N: [Actual Chapter Title]". If fewer, omit the extras. ALWAYS label each chapter clearly with its number AND the actual title from the thesis.)
 
 RULES:
+- ONLY output Weaknesses and What Should Be Added — no strengths, no scores, no recommendations, no viva questions
+- ALWAYS include the Preliminary Pages section first
 - Analyze EVERY chapter individually — do not skip or merge chapters
+- Label each chapter with its number AND actual title (e.g., "Chapter 3: Research Methodology")
 - Be specific: quote or reference exact sections when pointing out issues
-- For each weakness, explain WHY it matters and HOW to fix it
-- For "What Should Be Added", be concrete (e.g., "Add a comparison table of methodologies" not just "improve methodology")
+- For each weakness, explain WHY it matters
+- For "What Should Be Added", be concrete (e.g., "Add a comparison table of methodologies" not "improve methodology")
 - Do NOT insult, shame, or dismiss the student
-- Balance critique with encouragement
-- Always suggest HOW to improve, not just what is wrong
-- Do not fabricate references
-- Do not claim plagiarism unless clearly evident
-- Be thorough — this is a comprehensive academic review report`;
+- Always frame critique constructively
+- Do not fabricate references`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
