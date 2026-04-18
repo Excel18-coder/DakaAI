@@ -185,7 +185,7 @@ const ScoreSheetButton = ({ title, text, format }: ScoreSheetButtonProps) => {
         ) : (
           <>
             <ClipboardCheck className="w-4 h-4" />
-            {scoreData ? "Re-score & Download" : "Generate Score Sheet (PDF)"}
+            {scoreData ? "Re-generate & Download" : "Submission Ready Report (PDF)"}
           </>
         )}
       </Button>
