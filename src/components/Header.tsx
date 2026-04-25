@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { BookOpen, GraduationCap, LogOut, History } from "lucide-react";
+import { GraduationCap, LogOut, History } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "react-router-dom";
@@ -53,9 +53,24 @@ const Header = () => {
               </Button>
             </>
           ) : (
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <BookOpen className="w-4 h-4" />
-              <span className="text-sm font-sans">Academic Review Assistant</span>
+            <div className="flex items-center gap-2">
+              <Link to="/auth">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="font-sans"
+                >
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/auth">
+                <Button
+                  size="sm"
+                  className="font-sans bg-accent text-accent-foreground hover:bg-accent/90"
+                >
+                  Sign Up
+                </Button>
+              </Link>
             </div>
           )}
         </div>

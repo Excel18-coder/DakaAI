@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Header from "@/components/Header";
 import ThesisInput from "@/components/ThesisInput";
 import ReviewOutput from "@/components/ReviewOutput";
@@ -7,11 +7,20 @@ import AiDetectionResult, { type AiDetectionData } from "@/components/AiDetectio
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 
+interface UserProfile {
+  authorName?: string | null;
+  email?: string | null;
+}
+
 const Index = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [reviewContent, setReviewContent] = useState("");
   const [thesisTitle, setThesisTitle] = useState("");
   const [thesisText, setThesisText] = useState("");
@@ -19,6 +28,31 @@ const Index = () => {
   const [showReview, setShowReview] = useState(false);
   const [saved, setSaved] = useState(false);
   const [aiDetection, setAiDetection] = useState<AiDetectionData | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!user) return;
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("author_name, email")
+          .eq("id", user.id)
+          .single();
+        
+        if (!error && data) {
+          setUserProfile({
+            authorName: data.author_name,
+            email: data.email,
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
+    };
+
+    fetchUserProfile();
+  }, [user]);
 
   const saveReview = useCallback(async (title: string, text: string, content: string) => {
     if (!user) return;
@@ -216,6 +250,39 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <main className="max-w-4xl mx-auto px-6 py-10">
+        {!user && !showReview && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-8 rounded-xl border border-border bg-card p-8 text-center shadow-sm"
+          >
+            <h2 className="text-2xl font-display font-semibold text-foreground mb-2">
+              Welcome to ScholarReview AI
+            </h2>
+            <p className="text-muted-foreground font-sans mb-6 max-w-2xl mx-auto">
+              Get comprehensive, AI-powered feedback on your academic thesis. Our system analyzes your work and provides structured, actionable insights to help improve your writing.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+              <Button
+                onClick={() => navigate("/auth")}
+                className="font-sans bg-accent text-accent-foreground hover:bg-accent/90"
+              >
+                Sign Up for Free
+              </Button>
+              <Button
+                onClick={() => navigate("/auth")}
+                variant="outline"
+                className="font-sans"
+              >
+                Sign In
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground font-sans mt-4">
+              Create an account to save your reviews and track your progress.
+            </p>
+          </motion.div>
+        )}
         {!showReview ? (
           <div className="space-y-6">
             <ThesisInput onSubmit={handleSubmit} onScore={handleScore} onDetectAi={handleDetectAi} isLoading={isLoading} />
@@ -229,6 +296,7 @@ const Index = () => {
               content={reviewContent}
               title={thesisTitle}
               isStreaming={isLoading}
+              userInfo={userProfile}
             />
             {!isLoading && reviewContent && (
               <div className="flex flex-col items-center gap-3 pt-4">

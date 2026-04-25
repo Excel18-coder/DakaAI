@@ -9,9 +9,13 @@ interface ReviewOutputProps {
   content: string;
   title: string;
   isStreaming: boolean;
+  userInfo?: {
+    authorName?: string | null;
+    email?: string | null;
+  };
 }
 
-const ReviewOutput = ({ content, title, isStreaming }: ReviewOutputProps) => {
+const ReviewOutput = ({ content, title, isStreaming, userInfo }: ReviewOutputProps) => {
   const reportRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = async () => {
@@ -71,6 +75,35 @@ const ReviewOutput = ({ content, title, isStreaming }: ReviewOutputProps) => {
       </div>
 
       <div className="bg-card rounded-xl border border-border p-6 md:p-8 shadow-sm" ref={reportRef}>
+        <div className="mb-8 pb-8 border-b border-border">
+          <h1 className="text-3xl font-display font-bold text-foreground mb-6">{title}</h1>
+          {userInfo && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+              {userInfo.authorName && (
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-1">
+                    Author
+                  </p>
+                  <p className="text-foreground font-medium">{userInfo.authorName}</p>
+                </div>
+              )}
+              {userInfo.email && (
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-1">
+                    Email
+                  </p>
+                  <p className="text-foreground font-medium">{userInfo.email}</p>
+                </div>
+              )}
+              <div>
+                <p className="text-xs uppercase tracking-widest text-muted-foreground font-semibold mb-1">
+                  Date
+                </p>
+                <p className="text-foreground font-medium">{new Date().toLocaleDateString()}</p>
+              </div>
+            </div>
+          )}
+        </div>
         <div className="prose prose-sm max-w-none font-sans text-foreground
           prose-headings:font-display prose-headings:text-foreground prose-headings:font-semibold
           prose-h2:text-xl prose-h2:mt-8 prose-h2:mb-3 prose-h2:border-b prose-h2:border-border prose-h2:pb-2
