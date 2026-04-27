@@ -4,6 +4,7 @@ import { GraduationCap, Mail, Lock, User, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
+import { signInWithGoogle } from "@/integrations/firebase/authHelper";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
@@ -47,16 +48,32 @@ const Auth = () => {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: window.location.origin,
-        },
-      });
-      if (error) throw error;
+      console.log('📍 Starting Google Sign-In from Auth component...');
+      const firebaseUser = await signInWithGoogle();
+      console.log('✅ Google Sign-In returned user:', firebaseUser?.email);
+      
+      // Firebase user is now authenticated via AuthProvider
+      // Redirect will happen automatically when auth state changes
+      toast.success("Signed in with Google!");
+      navigate("/");
     } catch (err: any) {
-      toast.error(err.message || "Google sign in failed");
-      setLoading(false);
+      console.error('❌ Google sign in error in Auth component:', err);
+      
+      // Handle expected errors gracefully
+      if (err.code === 'popup-closed-by-user' || err.message === 'Sign in cancelled') {
+        // User closed the popup - silent dismiss
+        console.log('⚠️ User cancelled sign-in');
+        setLoading(false);
+      } else if (err.code === 'popup-blocked' || err.message.includes('blocked')) {
+        toast.error("Popup was blocked. Please allow popups in your browser settings and try again.");
+        setLoading(false);
+      } else if (err.code === 'unauthorized-domain') {
+        toast.error("❌ Domain not authorized. Must add localhost:8080 to Firebase authorized domains.");
+        setLoading(false);
+      } else {
+        toast.error(err.message || "Google sign in failed");
+        setLoading(false);
+      }
     }
   };
 
