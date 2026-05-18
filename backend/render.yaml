@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: dakaai-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: CLIENT_ORIGIN
+        scope: runtime
+        sync: false
+      - key: MONGODB_URI
+        scope: runtime
+        sync: false
+      - key: JWT_SECRET
+        scope: runtime
+        sync: false
+      - key: NVIDIA_API_KEY
+        scope: runtime
+        sync: false
+      - key: NVIDIA_API_URL
+        value: https://integrate.api.nvidia.com/v1/chat/completions
+      - key: NVIDIA_MODEL
+        value: nvidia/nemotron-3-nano-omni-30b-a3b-reasoning
+      - key: NVIDIA_MAX_TOKENS
+        value: 65536
+      - key: NVIDIA_TEMPERATURE
+        value: 0.6
+      - key: NVIDIA_TOP_P
+        value: 0.95
+      - key: NVIDIA_ENABLE_THINKING
+        value: "true"
+      - key: NVIDIA_REASONING_BUDGET
+        value: 16384
