@@ -1,0 +1,5 @@
+✅ Backend listening on http://localhost:5050
+🗄️  MongoDB: mongodb://localhost:27017/dakaai
+🤖 NVIDIA Model: nvidia/nemotron-3-nano-omni-30b-a3b-reasoning
+💭 Thinking enabled: true
+⚠️  MongoDB connection error: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017
