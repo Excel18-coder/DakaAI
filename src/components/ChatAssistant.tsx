@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+import { API_BASE_URL } from "@/lib/api";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -30,11 +29,6 @@ const ChatAssistant = () => {
   const send = async () => {
     const text = input.trim();
     if (!text || isLoading) return;
-    if (!SUPABASE_URL) {
-      toast.error("Backend not configured.");
-      return;
-    }
-
     const userMsg: Msg = { role: "user", content: text };
     const next = [...messages, userMsg];
     setMessages(next);
@@ -42,11 +36,10 @@ const ChatAssistant = () => {
     setIsLoading(true);
 
     try {
-      const resp = await fetch(`${SUPABASE_URL}/functions/v1/chat-assistant`, {
+      const resp = await fetch(`${API_BASE_URL}/api/chat-assistant`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({ messages: next }),
       });

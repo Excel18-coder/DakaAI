@@ -13,6 +13,7 @@ dotenv.config();
 const app = express();
 const PORT = Number(process.env.PORT || 5050);
 const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:5173";
+const EXTRA_ORIGINS = (process.env.EXTRA_ORIGINS || "").split(",").map((v) => v.trim()).filter(Boolean);
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/dakaai";
 const JWT_SECRET = process.env.JWT_SECRET || "your_super_secret_jwt_key_change_this_in_production";
 
@@ -54,6 +55,7 @@ const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       CLIENT_ORIGIN,
+      ...EXTRA_ORIGINS,
       'http://localhost:5173',
       'http://127.0.0.1:5173',
       'http://127.0.0.1:8080',

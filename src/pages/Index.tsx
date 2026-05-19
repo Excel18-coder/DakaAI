@@ -6,12 +6,10 @@ import ScoreSheetButton from "@/components/ScoreSheetButton";
 import AiDetectionResult, { type AiDetectionData } from "@/components/AiDetectionResult";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+import { apiFetch, API_BASE_URL } from "@/lib/api";
 
 interface UserProfile {
   authorName?: string | null;
@@ -31,50 +29,40 @@ const Index = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      if (!user) return;
-      try {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("author_name, email")
-          .eq("id", user.id)
-          .single();
-        
-        if (!error && data) {
-          setUserProfile({
-            authorName: data.author_name,
-            email: data.email,
-          });
-        }
-      } catch (err) {
-        console.error("Error fetching profile:", err);
-      }
-    };
-
-    fetchUserProfile();
+    if (!user) {
+      setUserProfile(null);
+      return;
+    }
+    setUserProfile({
+      authorName: "displayName" in user ? user.displayName || null : null,
+      email: "email" in user ? user.email || null : null,
+    });
   }, [user]);
 
   const saveReview = useCallback(async (title: string, text: string, content: string) => {
     if (!user) return;
-    const { error } = await supabase.from("reviews").insert({
-      user_id: user.id,
-      thesis_title: title,
-      thesis_text: text,
-      review_content: content,
-    });
-    if (error) {
+    try {
+      const resp = await apiFetch("/api/reports", {
+        method: "POST",
+        body: JSON.stringify({
+          thesisTitle: title,
+          thesisText: text,
+          reviewContent: content,
+          reportType: "review",
+        }),
+      });
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        console.error("Save error:", err);
+      } else {
+        setSaved(true);
+      }
+    } catch (error) {
       console.error("Save error:", error);
-    } else {
-      setSaved(true);
     }
   }, [user]);
 
   const handleSubmit = useCallback(async (title: string, text: string, format: string) => {
-    if (!SUPABASE_URL) {
-      toast.error("Backend not configured. Please enable Lovable Cloud.");
-      return;
-    }
-
     setThesisTitle(title);
     setThesisText(text);
     setReviewContent("");
@@ -83,11 +71,10 @@ const Index = () => {
     setSaved(false);
 
     try {
-      const resp = await fetch(`${SUPABASE_URL}/functions/v1/review-thesis`, {
+      const resp = await fetch(`${API_BASE_URL}/api/review-thesis`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({ title, text, format }),
       });
@@ -174,17 +161,12 @@ const Index = () => {
   }, [user, saveReview]);
 
   const handleScore = useCallback(async (title: string, text: string, format: string) => {
-    if (!SUPABASE_URL) {
-      toast.error("Backend not configured.");
-      return;
-    }
     setIsLoading(true);
     try {
-      const resp = await fetch(`${SUPABASE_URL}/functions/v1/score-thesis`, {
+      const resp = await fetch(`${API_BASE_URL}/api/score-thesis`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({ title, text, format }),
       });
@@ -207,18 +189,13 @@ const Index = () => {
   }, []);
 
   const handleDetectAi = useCallback(async (title: string, text: string) => {
-    if (!SUPABASE_URL) {
-      toast.error("Backend not configured.");
-      return;
-    }
     setIsLoading(true);
     setAiDetection(null);
     try {
-      const resp = await fetch(`${SUPABASE_URL}/functions/v1/detect-ai`, {
+      const resp = await fetch(`${API_BASE_URL}/api/detect-ai`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({ title, text }),
       });

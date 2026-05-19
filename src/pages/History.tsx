@@ -2,18 +2,18 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Clock, Trash2, Eye, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import ReviewOutput from "@/components/ReviewOutput";
+import { apiFetch } from "@/lib/api";
 
 interface Review {
-  id: string;
-  thesis_title: string;
-  thesis_text: string;
-  review_content: string;
-  created_at: string;
+  _id: string;
+  thesisTitle: string;
+  thesisText: string;
+  reviewContent: string;
+  createdAt: string;
 }
 
 const History = () => {
@@ -25,14 +25,17 @@ const History = () => {
   useEffect(() => {
     if (!user) return;
     const fetchReviews = async () => {
-      const { data, error } = await supabase
-        .from("reviews")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) {
-        toast.error("Failed to load reviews");
-      } else {
+      try {
+        const resp = await apiFetch("/api/reports");
+        if (!resp.ok) {
+          toast.error("Failed to load reviews");
+          return;
+        }
+        const data = await resp.json();
         setReviews(data || []);
+      } catch (error) {
+        console.error("Fetch reviews error:", error);
+        toast.error("Failed to load reviews");
       }
       setLoading(false);
     };
@@ -40,13 +43,18 @@ const History = () => {
   }, [user]);
 
   const handleDelete = async (id: string) => {
-    const { error } = await supabase.from("reviews").delete().eq("id", id);
-    if (error) {
-      toast.error("Failed to delete review");
-    } else {
-      setReviews((prev) => prev.filter((r) => r.id !== id));
-      if (selectedReview?.id === id) setSelectedReview(null);
+    try {
+      const resp = await apiFetch(`/api/reports/${id}`, { method: "DELETE" });
+      if (!resp.ok) {
+        toast.error("Failed to delete review");
+        return;
+      }
+      setReviews((prev) => prev.filter((r) => r._id !== id));
+      if (selectedReview?._id === id) setSelectedReview(null);
       toast.success("Review deleted");
+    } catch (error) {
+      console.error("Delete review error:", error);
+      toast.error("Failed to delete review");
     }
   };
 
@@ -62,8 +70,8 @@ const History = () => {
             Back to history
           </button>
           <ReviewOutput
-            content={selectedReview.review_content}
-            title={selectedReview.thesis_title}
+            content={selectedReview.reviewContent}
+            title={selectedReview.thesisTitle}
             isStreaming={false}
           />
         </div>
@@ -106,7 +114,7 @@ const History = () => {
           <div className="space-y-3">
             {reviews.map((review, i) => (
               <motion.div
-                key={review.id}
+                key={review._id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
@@ -114,10 +122,10 @@ const History = () => {
               >
                 <div className="min-w-0 flex-1">
                   <h3 className="font-display font-semibold text-foreground truncate">
-                    {review.thesis_title}
+                    {review.thesisTitle}
                   </h3>
                   <p className="text-xs text-muted-foreground font-sans mt-0.5">
-                    {new Date(review.created_at).toLocaleDateString("en-US", {
+                    {new Date(review.createdAt).toLocaleDateString("en-US", {
                       year: "numeric", month: "long", day: "numeric",
                     })}
                   </p>
@@ -135,7 +143,7 @@ const History = () => {
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={() => handleDelete(review.id)}
+                    onClick={() => handleDelete(review._id)}
                     className="text-destructive hover:text-destructive/80"
                   >
                     <Trash2 className="w-3.5 h-3.5" />

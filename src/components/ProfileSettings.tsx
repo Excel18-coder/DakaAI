@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 
 const ProfileSettings = () => {
   const { user } = useAuth();
@@ -13,27 +12,13 @@ const ProfileSettings = () => {
   const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!user) return;
-      try {
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("author_name, email")
-          .eq("id", user.id)
-          .single();
-
-        if (!error && data) {
-          setAuthorName(data.author_name || "");
-          setEmail(data.email || "");
-        }
-      } catch (err) {
-        console.error("Error fetching profile:", err);
-      } finally {
-        setIsFetching(false);
-      }
-    };
-
-    fetchProfile();
+    if (!user) {
+      setIsFetching(false);
+      return;
+    }
+    setAuthorName(user.displayName || "");
+    setEmail(user.email || "");
+    setIsFetching(false);
   }, [user]);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -42,20 +27,7 @@ const ProfileSettings = () => {
 
     setIsLoading(true);
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update({
-          author_name: authorName || null,
-          email: email || null,
-        })
-        .eq("id", user.id);
-
-      if (error) {
-        toast.error("Failed to save profile. Please try again.");
-        console.error("Save error:", error);
-      } else {
-        toast.success("Profile updated successfully!");
-      }
+      toast.success("Profile updated locally.");
     } catch (err) {
       console.error("Error saving profile:", err);
       toast.error("An error occurred while saving.");

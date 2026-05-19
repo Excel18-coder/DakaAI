@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+import { API_BASE_URL } from "@/lib/api";
 
 type CitationFormat = "APA" | "MLA" | "Chicago" | "IEEE";
 
@@ -53,10 +52,9 @@ const ThesisInput = ({ onSubmit, onScore, onDetectAi, isLoading }: ThesisInputPr
         const formData = new FormData();
         formData.append("file", file);
 
-        const resp = await fetch(`${SUPABASE_URL}/functions/v1/parse-document`, {
+        const resp = await fetch(`${API_BASE_URL}/api/parse-document`, {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
           body: formData,
         });

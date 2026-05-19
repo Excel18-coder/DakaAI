@@ -2,8 +2,7 @@ import { useState } from "react";
 import { ClipboardCheck, Loader2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+import { API_BASE_URL } from "@/lib/api";
 
 interface ScoreData {
   scores: Record<string, { score: number; max: number; justification: string }>;
@@ -136,11 +135,10 @@ const ScoreSheetButton = ({ title, text, format }: ScoreSheetButtonProps) => {
   const handleScore = async () => {
     setIsScoring(true);
     try {
-      const resp = await fetch(`${SUPABASE_URL}/functions/v1/score-thesis`, {
+      const resp = await fetch(`${API_BASE_URL}/api/score-thesis`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({ title, text, format }),
       });
