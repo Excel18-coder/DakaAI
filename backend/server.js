@@ -5,32 +5,18 @@ import {
  loginCounter,
  failedLoginCounter
 } from "./monitoring.js";
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
 import multer from "multer";
+import cors from "cors";
+import express from "express";
 import pdfParse from "pdf-parse";
 import mammoth from "mammoth";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import { User, Report, FileUpload, Review } from "./models.js";
-
+import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
-const register = new client.Registry();
-
-client.collectDefaultMetrics({
-  register
-});
-
-const httpRequests = new client.Counter({
-  name: "http_requests_total",
-  help: "Total HTTP requests",
-  labelNames: ["method","route","status"]
-});
-
-register.registerMetric(httpRequests);
 
 
 app.use((req,res,next)=>{
