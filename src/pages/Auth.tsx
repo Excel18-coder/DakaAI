@@ -64,10 +64,10 @@ const Auth = () => {
             <GraduationCap className="w-7 h-7 text-accent" />
           </div>
           <h1 className="text-3xl font-display font-semibold text-foreground">
-            ScholarReview
+            DakaAI
           </h1>
           <p className="text-muted-foreground font-sans mt-1">
-            {isLogin ? "Sign in to access your reviews" : "Create an account to get started"}
+            {isLogin ? "Sign in to access your thesis analysis" : "Create an account to get AI-powered thesis feedback"}
           </p>
         </div>
 

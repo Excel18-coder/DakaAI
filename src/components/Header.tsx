@@ -22,10 +22,10 @@ const Header = () => {
           </div>
           <div>
             <h1 className="text-xl font-display font-semibold text-foreground leading-tight">
-              ScholarReview
+              DakaAI
             </h1>
             <p className="text-xs text-muted-foreground font-sans tracking-wide uppercase">
-              AI Thesis Examiner
+              AI Thesis Analysis
             </p>
           </div>
         </Link>

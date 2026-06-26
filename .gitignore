@@ -42,13 +42,12 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
-=======
-
 # Testing
 coverage/
 .nyc_output/
+# Legacy frontend copy
+frontend/
 
 # Misc
 .cache/
 *.tmp
->>>>>>> 66fb085 (fix: Resolve TypeScript compilation errors in PDF system)

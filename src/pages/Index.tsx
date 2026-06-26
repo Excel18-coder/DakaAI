@@ -235,10 +235,10 @@ const Index = () => {
             className="mb-8 rounded-xl border border-border bg-card p-8 text-center shadow-sm"
           >
             <h2 className="text-2xl font-display font-semibold text-foreground mb-2">
-              Welcome to ScholarReview AI
+              Welcome to DakaAI
             </h2>
             <p className="text-muted-foreground font-sans mb-6 max-w-2xl mx-auto">
-              Get comprehensive, AI-powered feedback on your academic thesis. Our system analyzes your work and provides structured, actionable insights to help improve your writing.
+              Get comprehensive, AI-powered thesis analysis from DakaAI. Our system evaluates your work and delivers structured, actionable insights to improve your research and writing.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
               <Button

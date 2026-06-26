@@ -13,10 +13,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           <div>
             <h3 className="text-sm font-display font-semibold text-foreground mb-4">
-              ScholarReview AI
+              DakaAI
             </h3>
             <p className="text-sm text-muted-foreground font-sans">
-              AI-powered academic thesis and dissertation review tool. Get structured, comprehensive evaluations with actionable feedback.
+              AI-powered academic thesis and dissertation analysis tool. Get structured, comprehensive evaluations with actionable feedback.
             </p>
           </div>
 
@@ -56,7 +56,7 @@ const Footer = () => {
 
         <div className="border-t border-border pt-6">
           <p className="text-xs text-muted-foreground text-center font-sans">
-            © {new Date().getFullYear()} ScholarReview AI. All rights reserved.
+            © {new Date().getFullYear()} DakaAI. All rights reserved.
           </p>
         </div>
       </div>

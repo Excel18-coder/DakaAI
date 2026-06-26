@@ -15,7 +15,7 @@ const ChatAssistant = () => {
     {
       role: "assistant",
       content:
-        "Hi! 👋 I'm your ScholarReview assistant. Ask me about thesis review, scoring, AI detection, citations, or anything academic.",
+        "Hi! 👋 I'm your DakaAI assistant. Ask me about thesis review, scoring, AI detection, citations, or anything academic.",
     },
   ]);
   const [input, setInput] = useState("");
