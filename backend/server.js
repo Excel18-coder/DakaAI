@@ -5,19 +5,21 @@ import {
  loginCounter,
  failedLoginCounter
 } from "./monitoring.js";
-import multer from "multer";
-import cors from "cors";
 import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import multer from "multer";
+import path from "path";
 import pdfParse from "pdf-parse";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import mammoth from "mammoth";
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import { User, Report, FileUpload, Review } from "./models.js";
-import dotenv from "dotenv";
+
 dotenv.config();
 
 const app = express();
-
 
 app.use((req,res,next)=>{
   res.on("finish",()=>{
@@ -55,6 +57,40 @@ const NVIDIA_REASONING_BUDGET = Number(process.env.NVIDIA_REASONING_BUDGET || 16
 mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 5000 }).catch((err) => {
   console.error("⚠️  MongoDB connection error:", err.message);
 });
+
+async function extractTextFromPdfBuffer(buffer) {
+  try {
+    const data = await pdfParse(buffer);
+    return data.text || "";
+  } catch (primaryError) {
+    console.warn(
+      "/api/parse-document primary pdfParse failed, attempting fallback parser:",
+      primaryError?.message || primaryError
+    );
+
+    // Fallback using pdfjs-dist directly for better handling of edge-case PDFs.
+    try {
+      if (pdfjsLib.GlobalWorkerOptions) {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "";
+      }
+    } catch (err) {
+      // Ignore if worker config is unavailable.
+    }
+
+    const loadingTask = pdfjsLib.getDocument({ data: buffer });
+    const pdfDocument = await loadingTask.promise;
+    let extractedText = "";
+
+    for (let pageNum = 1; pageNum <= pdfDocument.numPages; pageNum += 1) {
+      const page = await pdfDocument.getPage(pageNum);
+      const content = await page.getTextContent();
+      const pageText = content.items.map((item) => item.str || "").join(" ");
+      extractedText += pageText + "\n";
+    }
+
+    return extractedText.trim();
+  }
+}
 
 // Middleware to verify JWT token
 const verifyToken = (req, res, next) => {
@@ -438,26 +474,28 @@ app.post("/api/parse-document", upload.single("file"), async (req, res) => {
     const filename = req.file.originalname.toLowerCase();
     const ext = path.extname(filename);
 
+    let text = "";
+
     if (ext === ".txt" || ext === ".md") {
-      const text = req.file.buffer.toString("utf-8");
-      res.json({ text });
-      return;
-    }
-
-    if (ext === ".pdf") {
-      const data = await pdfParse(req.file.buffer);
-      res.json({ text: data.text || "" });
-      return;
-    }
-
-    if (ext === ".docx") {
+      text = req.file.buffer.toString("utf-8");
+    } else if (ext === ".pdf") {
+      try {
+        text = await extractTextFromPdfBuffer(req.file.buffer);
+      } catch (pdfError) {
+        console.error("/api/parse-document PDF extraction failed:", pdfError);
+        text = "";
+      }
+    } else if (ext === ".docx") {
       const result = await mammoth.extractRawText({ buffer: req.file.buffer });
-      res.json({ text: result.value || "" });
+      text = result.value || "";
+    } else {
+      res.status(400).json({ error: "Unsupported file type" });
       return;
     }
 
-    res.status(400).json({ error: "Unsupported file type" });
+    res.json({ text });
   } catch (error) {
+    console.error("/api/parse-document error:", error);
     res.status(500).json({ error: "Failed to parse document" });
   }
 });
