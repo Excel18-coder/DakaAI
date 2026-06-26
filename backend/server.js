@@ -1,3 +1,10 @@
+import register from "./monitoring.js";
+import {
+ httpRequests,
+ signupCounter,
+ loginCounter,
+ failedLoginCounter
+} from "./monitoring.js";
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -11,6 +18,38 @@ import { User, Report, FileUpload, Review } from "./models.js";
 dotenv.config();
 
 const app = express();
+const register = new client.Registry();
+
+client.collectDefaultMetrics({
+  register
+});
+
+const httpRequests = new client.Counter({
+  name: "http_requests_total",
+  help: "Total HTTP requests",
+  labelNames: ["method","route","status"]
+});
+
+register.registerMetric(httpRequests);
+
+
+app.use((req,res,next)=>{
+  res.on("finish",()=>{
+    httpRequests.inc({
+      method:req.method,
+      route:req.path,
+      status:res.statusCode
+    });
+  });
+
+  next();
+});
+
+
+app.get("/metrics", async(req,res)=>{
+  res.set("Content-Type", register.contentType);
+  res.end(await register.metrics());
+});
 const PORT = Number(process.env.PORT || 5050);
 const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "http://localhost:5173";
 const EXTRA_ORIGINS = (process.env.EXTRA_ORIGINS || "").split(",").map((v) => v.trim()).filter(Boolean);
@@ -928,8 +967,20 @@ app.delete("/api/reviews/:id", async (req, res) => {
     console.error("Delete review error:", error.message);
     res.status(500).json({ error: "Failed to delete review" });
   }
-});
 
+});
+app.get("/metrics", async(req,res)=>{
+
+res.setHeader(
+"Content-Type",
+register.contentType
+);
+
+res.end(
+await register.metrics()
+);
+
+});
 app.listen(PORT, () => {
   console.log(`✅ Backend listening on http://localhost:${PORT}`);
   console.log(`🗄️  MongoDB: ${MONGODB_URI}`);
